@@ -60,13 +60,17 @@ export class PeopleService {
       ),
     );
 
-  create = (person: AddPersonDTO): Observable<Person> =>
+  create = (personToAdd: AddPersonDTO): Observable<any> =>
     from(this._people).pipe(
-        find((p: Person) => p.firstname === person.firstname && p.lastname === person.lastname),
-        mergeMap((p: Person) => 
-            !!p
-            ? throwError( () => new ConflictException('Person with same firstname and lastname already exist.')),
-            : this._people[this._people.length] = p;
+        find((person: Person) => 
+          person.firstname.toLowerCase() === personToAdd.firstname.toLowerCase() 
+          && person.lastname.toLowerCase() === personToAdd.lastname.toLowerCase()
+        ),
+        mergeMap((person: Person) => 
+            !!person
+            ? throwError( () => new ConflictException('Person with same firstname and lastname already exist.'))
+            ://s this._people[this._people.length]
+            ;
         ),
     );
 
