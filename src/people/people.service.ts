@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PEOPLE } from '../data/people';
@@ -31,6 +31,7 @@ export class PeopleService {
       ),
     );
 
+
   /**
    * Function to parse date and return timestamp
    *
@@ -44,4 +45,11 @@ export class PeopleService {
     const dates = date.split('/');
     return new Date(dates[2] + '/' + dates[1] + '/' + dates[0]).getTime();
   };
+  
+  findOne = (id: string): Observable<Person> =>
+    of(this._people.find(person => person.id == id)).pipe(
+        map((person: Person) => 
+            !!person ? person : throw new NotFoundException("Person with id ${id}"),
+        ),
+    );
 }
