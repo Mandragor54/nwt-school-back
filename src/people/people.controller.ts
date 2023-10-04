@@ -62,4 +62,9 @@ export class PeopleController {
   create(@Body() createPersonDto: CreatePersonDto): Observable<Person> {
     return this._peopleService.create(createPersonDto);
   }
+
+  @Post(':id')
+  update(@Body() personToUpdate): Observable<Person> {
+    return this._peopleService.update(personToUpdate);
+  }
 }

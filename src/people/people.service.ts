@@ -93,6 +93,27 @@ export class PeopleService {
       ),
     );
 
+  update = (personToUpdate: _): Observable<Person> =>
+    from(this._people).pipe(
+      find(
+        (person: Person) =>
+          personToUpdate.lastname.toLowerCase() ===
+            person.lastname.toLowerCase() &&
+          personToUpdate.firstname.toLowerCase() ===
+            person.firstname.toLowerCase(),
+      ),
+      mergeMap((person: Person) =>
+        !!person
+          ? throwError(
+              () =>
+                new ConflictException(
+                  `People with lastname '${personToUpdate.lastname}' and firstname '${personToUpdate.firstname}' already exists`,
+                ),
+            )
+          : this._updatePerson(person),
+      ),
+    );
+
   /**
    * Add person with good data in people list
    *
@@ -114,6 +135,9 @@ export class PeopleService {
           (this._people = this._people.concat(createdPerson)),
       ),
     );
+
+  private _updatePerson = (person: UpdatePersonDto): Observable<Person> => 
+  
 
   /**
    * Function to parse date and return timestamp
