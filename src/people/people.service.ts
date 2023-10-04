@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { find, from, Observable, of, throwError } from 'rxjs';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { find, from, merge, Observable, of, throwError } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { PEOPLE } from '../data/people';
-import { Person } from './people.types';
+import { AddPersonDTO, Person } from './people.types';
 
 @Injectable()
 export class PeopleService {
@@ -58,6 +58,16 @@ export class PeopleService {
               () => new NotFoundException(`People with id '${id}' not found`),
             ),
       ),
+    );
+
+  create = (person: AddPersonDTO): Observable<Person> =>
+    from(this._people).pipe(
+        find((p: Person) => p.firstname === person.firstname && p.lastname === person.lastname),
+        mergeMap((p: Person) => 
+            !!p
+            ? throwError( () => new ConflictException('Person with same firstname and lastname already exist.')),
+            : this._people[this._people.length] = p;
+        ),
     );
 
   /**

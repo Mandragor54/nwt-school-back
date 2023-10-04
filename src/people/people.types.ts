@@ -18,3 +18,8 @@ export type Address = {
   postalCode: string;
   city: string;
 };
+
+export type AddPersonDTO = {
+  firstname: string;
+  lastname: string;
+}
