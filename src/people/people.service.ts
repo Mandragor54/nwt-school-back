@@ -144,6 +144,7 @@ export class PeopleService {
           : throwError(
               () => new NotFoundException(`People with id '${id}' not found`),
             ),
+            
       ),
     );
 
